@@ -1,7 +1,7 @@
-# CSA04 Operating Systems – Assignment 1 (Smart Hospital)
+# CSA0421 Operating Systems – Assignment 1 (Smart Hospital)
 
-- Name: **[your name]**
-- Register number: **[your register number]**
+- Name: **Bharath Raj S**
+- Register number: **192521082**
 - Compiler: gcc 13.x (`gcc --version`)  |  OS: Ubuntu 24.04 LTS (or your Linux distribution + version)
 - Compile command: `gcc -std=c11 -Wall -Wextra -pthread -o prog prog.c`
 
