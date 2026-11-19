@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SysPilot: CPU Scheduling & Linux Resource Monitoring System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- App Header -->
+    <header class="app-header">
+        <div class="header-inner">
+            <div class="logo-group">
+                <div class="logo-badge">SYSPILOT</div>
+                <div>
+                    <h1 class="app-title">
+                        SysPilot OS Engine
+                        <span style="font-size:12px; font-weight:400; color:var(--text-muted); background:var(--bg-card); padding:2px 8px; border-radius:12px; border:1px solid var(--border-color);">Capstone Project Edition</span>
+                    </h1>
+                    <div class="app-subtitle">Design & Performance Evaluation of CPU Scheduling with Linux Resource Monitoring in C</div>
+                </div>
+            </div>
+
+            <div class="header-status-group">
+                <div class="status-pill">
+                    <span class="status-dot"></span>
+                    <span>LOCALHOST:5000</span>
+                </div>
+                <div class="status-pill" id="header-health-score" style="color:var(--accent-green); font-weight:700;">
+                    Health: 100% (OPTIMAL)
+                </div>
+                <div class="status-pill" style="font-family:var(--font-mono); color:var(--text-muted);">
+                    Uptime: <span id="session-uptime" style="color:var(--text-main); margin-left:4px;">0m 00s</span>
+                </div>
+                <div id="active-stress-pill" class="status-pill sev-CRITICAL" style="display:none; animation:pulse 1s infinite;">
+                    ACTIVE STRESS
+                </div>
+
+                <div class="stress-controls">
+                    <button id="btn-toggle-telemetry" class="btn btn-sm" onclick="toggleTelemetryPause()" title="Pause live telemetry updates">⏸ Pause Telemetry</button>
+                    <select class="input-select" id="quick-stress-select" onchange="if(this.value){ triggerStress(this.value); this.value=''; }">
+                        <option value="">⚡ Trigger Bottleneck Stress...</option>
+                        <option value="cpu_saturation">🔥 CPU Saturation (>85%)</option>
+                        <option value="memory_pressure">💾 Memory Pressure & OOM</option>
+                        <option value="io_bottleneck">⏳ High I/O Wait Starvation</option>
+                        <option value="resource_conflict">⚔️ Multi-Process Contention</option>
+                    </select>
+                    <button class="btn btn-sm" onclick="resetStress()" title="Reset to nominal metrics">🔄 Reset</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+        <div class="tabs-inner">
+            <button class="tab-btn active" data-tab="tab-monitor">
+                <span>📊 Module 1: Live Monitoring</span>
+                <span class="tab-badge">Linux /proc & Host</span>
+            </button>
+            <button class="tab-btn" data-tab="tab-analyzer">
+                <span>🧠 Module 2: Bottleneck & Conflict Engine</span>
+                <span class="tab-badge">Intelligent Heuristics</span>
+            </button>
+            <button class="tab-btn" data-tab="tab-scheduler">
+                <span>⏱️ Module 3: CPU Scheduling & OS Optimizer</span>
+                <span class="tab-badge">7 Algorithms & Gantt</span>
+            </button>
+            <button class="tab-btn" data-tab="tab-code">
+                <span>💻 C Codebase & Capstone Report</span>
+                <span class="tab-badge">Source Architecture</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="main-content">
+
+        <!-- ===================================================================
+             TAB 1: LIVE SYSTEM & PROCESS MONITORING (MODULE 1)
+             =================================================================== -->
+        <section id="tab-monitor" class="tab-panel active">
+            <!-- 4 Top Metric Cards -->
+            <div class="grid-4">
+                <!-- CPU Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">🖥️ CPU Utilization</span>
+                        <span class="state-badge state-R">Realtime</span>
+                    </div>
+                    <div class="metric-huge">
+                        <span id="cpu-val">--</span><span class="metric-unit">%</span>
+                    </div>
+                    <div class="progress-bar-wrap">
+                        <div id="cpu-bar" class="progress-bar-fill" style="width: 0%;"></div>
+                    </div>
+                    <div class="submetric-row">
+                        <span>User: <strong id="cpu-user-val">--</strong></span>
+                        <span>Kernel: <strong id="cpu-sys-val">--</strong></span>
+                        <span>IO-Wait: <strong id="cpu-iowait-val">--</strong></span>
+                    </div>
+                </div>
+
+                <!-- Memory Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">💾 Memory Footprint</span>
+                        <span class="state-badge state-S">RAM & Swap</span>
+                    </div>
+                    <div class="metric-huge">
+                        <span id="mem-val">--</span><span class="metric-unit">%</span>
+                    </div>
+                    <div class="progress-bar-wrap">
+                        <div id="mem-bar" class="progress-bar-fill" style="width: 0%;"></div>
+                    </div>
+                    <div class="submetric-row">
+                        <span>Used: <strong id="mem-used-val">--</strong></span>
+                        <span>Total: <strong id="mem-total-val">--</strong></span>
+                        <span>Swap: <strong id="mem-swap-val">--</strong></span>
+                    </div>
+                </div>
+
+                <!-- Disk I/O Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">💽 Disk Throughput</span>
+                        <span id="disk-iops-val" class="state-badge state-S">-- IOPS</span>
+                    </div>
+                    <div class="metric-huge">
+                        <span id="disk-read-val">--</span><span class="metric-unit">MB/s Read</span>
+                    </div>
+                    <div class="progress-bar-wrap">
+                        <div class="progress-bar-fill" style="width: 45%;"></div>
+                    </div>
+                    <div class="submetric-row">
+                        <span>Write Bandwidth:</span>
+                        <span><strong id="disk-write-val">--</strong> MB/s</span>
+                    </div>
+                </div>
+
+                <!-- Concurrency / Context Switches Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">🔄 Concurrency & Context</span>
+                        <span class="state-badge state-R">Kernel Sched</span>
+                    </div>
+                    <div class="metric-huge">
+                        <span id="cs-val">--</span><span class="metric-unit">cs/s</span>
+                    </div>
+                    <div class="progress-bar-wrap">
+                        <div class="progress-bar-fill" style="width: 35%;"></div>
+                    </div>
+                    <div class="submetric-row">
+                        <span>Running: <strong id="procs-run-val" style="color:var(--accent-green);">--</strong></span>
+                        <span>Blocked (D-state): <strong id="procs-block-val" style="color:var(--accent-red);">--</strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Waveform Canvas Charts & Core Activity -->
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">📈 CPU Load History (Last 30 Samples)</span>
+                        <span style="font-size:12px; color:var(--accent-cyan); font-family:var(--font-mono);">/proc/stat Delta</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="cpu-chart-canvas"></canvas>
+                    </div>
+                    <div id="cores-container" class="cores-list">
+                        <!-- Per core bars injected via JS -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">📈 Physical Memory Gradient History</span>
+                        <span style="font-size:12px; color:var(--accent-purple); font-family:var(--font-mono);">/proc/meminfo</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="mem-chart-canvas"></canvas>
+                    </div>
+                    <div style="margin-top:16px; font-size:13px; color:var(--text-muted); background:var(--bg-card); padding:12px; border-radius:8px; border:1px solid var(--border-color);">
+                        <strong>Linux /proc Reader Architecture:</strong> Real-time telemetries are parsed directly via <code style="color:var(--accent-cyan);">/proc/stat</code> and <code style="color:var(--accent-cyan);">/proc/meminfo</code> kernel pseudo-files with cross-platform fallback bindings.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Process Table -->
+            <div class="card">
+                <div class="card-header" style="flex-wrap:wrap; gap:12px;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span class="card-title">⚙️ Active Process Table (/proc/[pid]/stat)</span>
+                        <span id="proc-count-badge" class="state-badge state-S">0 active</span>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" id="proc-search" class="input-text" placeholder="🔍 Search PID or Process name..." oninput="filterProcessTable()">
+                        <select id="proc-state-filter" class="input-select" onchange="fetchProcesses()">
+                            <option value="ALL">All States</option>
+                            <option value="R">Running (R)</option>
+                            <option value="S">Sleeping (S)</option>
+                            <option value="D">Blocked I/O (D)</option>
+                        </select>
+                        <button class="btn btn-sm" onclick="fetchProcesses()">🔄 Refresh</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>PID</th>
+                                <th>Process Name</th>
+                                <th>State</th>
+                                <th>Nice</th>
+                                <th>Priority</th>
+                                <th>Threads</th>
+                                <th>CPU Usage</th>
+                                <th>Memory (RSS)</th>
+                                <th>Disk I/O Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody id="proc-table-body">
+                            <!-- Process rows injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ===================================================================
+             TAB 2: INTELLIGENT BOTTLENECK & CONFLICT ANALYSIS (MODULE 2)
+             =================================================================== -->
+        <section id="tab-analyzer" class="tab-panel">
+            <div class="grid-2">
+                <!-- Health Overview Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">🛡️ System Health & Anomaly Index</span>
+                        <span id="health-status-badge" class="status-pill state-R">OPTIMAL</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:24px; margin:16px 0;">
+                        <div style="font-size:56px; font-weight:800; font-family:var(--font-mono); color:var(--accent-green);" id="health-score-val">
+                            100%
+                        </div>
+                        <div style="font-size:13px; color:var(--text-muted); line-height:1.6;">
+                            SysPilot analyzes real-time resource gradients against heuristic thresholds to detect CPU thrashing, memory exhaustion, swap thrashing, I/O wait stalls, and inter-process contention.
+                        </div>
+                    </div>
+                    <div style="background-color:var(--bg-card); border-radius:8px; padding:14px; border:1px solid var(--border-color); font-size:13px;">
+                        <div style="font-weight:700; color:var(--text-main); margin-bottom:6px;">Stress Testing Sandbox:</div>
+                        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                            <button class="btn btn-sm" onclick="triggerStress('cpu_saturation')">🔥 Trigger CPU Saturation</button>
+                            <button class="btn btn-sm" onclick="triggerStress('memory_pressure')">💾 Trigger RAM Thrash</button>
+                            <button class="btn btn-sm" onclick="triggerStress('io_bottleneck')">⏳ Trigger I/O Blockade</button>
+                            <button class="btn btn-sm" onclick="triggerStress('resource_conflict')">⚔️ Trigger Priority Inversion</button>
+                            <button class="btn btn-sm btn-danger" onclick="resetStress()">🔄 Reset Nominals</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resource Conflicts Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">⚔️ Inter-Process Resource Contention</span>
+                        <span class="state-badge state-S">Conflict Radar</span>
+                    </div>
+                    <div id="resource-conflicts-list">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Bottlenecks Feed -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">🚨 Detected System Bottlenecks & Remediation Protocols</span>
+                    <span style="font-size:12px; color:var(--text-muted);">Real-Time Diagnostic Rules</span>
+                </div>
+                <div id="bottleneck-alerts-list">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ===================================================================
+             TAB 3: CPU SCHEDULING ALGORITHMS & OS OPTIMIZER (MODULE 3)
+             =================================================================== -->
+        <section id="tab-scheduler" class="tab-panel">
+            <!-- Algorithm & Preset Configuration Card -->
+            <div class="card" style="margin-bottom:20px;">
+                <div class="card-header" style="flex-wrap:wrap; gap:12px;">
+                    <span class="card-title">⚙️ Algorithm Simulator Controls</span>
+                    <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                        <!-- Presets -->
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            <label style="font-size:13px; color:var(--text-muted);">Preset:</label>
+                            <select id="preset-select" class="input-select">
+                                <option value="academic_standard">Academic Benchmark (Balanced)</option>
+                                <option value="convoy_effect">Convoy Effect Demo (FCFS Stall)</option>
+                                <option value="priority_starvation">Priority Starvation & Aging</option>
+                                <option value="cfs_fair_share">CFS Fair-Share Multi-Tenant</option>
+                            </select>
+                        </div>
+
+                        <!-- Algorithm -->
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            <label style="font-size:13px; color:var(--text-muted);">Algorithm:</label>
+                            <select id="algo-select" class="input-select">
+                                <option value="rr">Round Robin (RR)</option>
+                                <option value="cfs">Linux Completely Fair Scheduler (CFS)</option>
+                                <option value="srtf">Shortest Remaining Time First (SRTF)</option>
+                                <option value="sjf">Shortest Job First (SJF Non-Preempt)</option>
+                                <option value="priority">Priority (Preemptive with Aging)</option>
+                                <option value="mlfq">Multilevel Feedback Queue (MLFQ)</option>
+                                <option value="fcfs">First-Come, First-Served (FCFS)</option>
+                            </select>
+                        </div>
+
+                        <!-- Quantum Slider -->
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <label style="font-size:13px; color:var(--text-muted);">Time Quantum (q):</label>
+                            <input type="range" id="quantum-slider" min="1" max="10" value="4" style="width:90px;">
+                            <span id="quantum-val" style="font-family:var(--font-mono); font-weight:700; color:var(--accent-cyan); min-width:20px;">4</span>
+                        </div>
+
+                        <!-- Actions -->
+                        <button id="btn-simulate" class="btn btn-primary">▶ Simulate Algorithm</button>
+                        <button id="btn-benchmark-all" class="btn" style="background:#238636; border-color:#2ea043; color:#fff;">🏆 Benchmark All (Head-to-Head)</button>
+                    </div>
+                </div>
+
+                <div id="preset-desc" style="font-size:13px; color:var(--text-highlight); background:rgba(88, 166, 255, 0.08); padding:8px 12px; border-radius:6px; border:1px solid rgba(88, 166, 255, 0.2);">
+                    Academic Benchmark Workload
+                </div>
+            </div>
+
+            <!-- Interactive Workload Queue Editor -->
+            <div class="card" style="margin-bottom:20px;">
+                <div class="card-header">
+                    <span class="card-title">📝 Process Workload Task Queue</span>
+                    <div style="display:flex; gap:8px;">
+                        <button id="btn-add-process" class="btn btn-sm">➕ Add Process</button>
+                        <button id="btn-randomize" class="btn btn-sm">🎲 Randomize</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>PID</th>
+                                <th>Process Name</th>
+                                <th>Arrival Time (A<sub>i</sub>)</th>
+                                <th>Burst Time (B<sub>i</sub>)</th>
+                                <th>Priority (1=High)</th>
+                                <th>Nice (-20 to 19)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="workload-table-body">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Visual Gantt Chart Timeline -->
+            <div class="card" style="margin-bottom:20px;">
+                <div class="card-header">
+                    <span class="card-title">📊 Execution Gantt Chart Timeline</span>
+                    <span style="font-size:12px; color:var(--text-muted);">Hover slice for details</span>
+                </div>
+                <div class="gantt-wrapper">
+                    <div id="gantt-chart-bar" class="gantt-chart">
+                        <!-- Gantt slices injected via JS -->
+                    </div>
+                    <div id="gantt-ticks" class="gantt-timeline-ticks">
+                        <span>0 ms</span>
+                    </div>
+                </div>
+
+                <div id="res-advice-box" class="advice-box">
+                    <strong style="color:var(--accent-cyan);">💡 OS Algorithmic Optimization & Tuning Advisor:</strong>
+                    <div id="res-advice-text" style="margin-top:6px; line-height:1.6;">
+                        Simulating workload...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance KPI Metrics Cards -->
+            <div class="grid-4" style="margin-bottom:20px;">
+                <div class="card">
+                    <div class="card-header"><span class="card-title">Avg Waiting Time</span></div>
+                    <div class="metric-huge" style="color:#58a6ff;" id="res-avg-wt">-- ms</div>
+                    <div class="submetric-row"><span>Total latency in ready queue</span></div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><span class="card-title">Avg Turnaround Time</span></div>
+                    <div class="metric-huge" style="color:#bc8cff;" id="res-avg-tat">-- ms</div>
+                    <div class="submetric-row"><span>Completion time - Arrival time</span></div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><span class="card-title">Avg Response Time</span></div>
+                    <div class="metric-huge" style="color:#38bdf8;" id="res-avg-rt">-- ms</div>
+                    <div class="submetric-row"><span>First schedule - Arrival time</span></div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><span class="card-title">Jain's Fairness Index</span></div>
+                    <div class="metric-huge" style="color:#3fb950;" id="res-fairness">--</div>
+                    <div class="submetric-row"><span>1.0 = Perfect resource share</span></div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><span class="card-title">CPU Utilization & Throughput</span></div>
+                    <div class="submetric-row" style="font-size:14px; margin-bottom:8px;">
+                        <span>CPU Utilization: <strong id="res-cpu-util" style="color:var(--text-main);">--%</strong></span>
+                        <span>Throughput: <strong id="res-throughput" style="color:var(--text-main);">-- j/ms</strong></span>
+                    </div>
+                    <div class="submetric-row" style="font-size:14px;">
+                        <span>Context Switches Incurred: <strong id="res-ctx-switches" style="color:var(--accent-orange);">--</strong></span>
+                    </div>
+                </div>
+
+                <!-- Process Metrics Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">📋 Process-by-Process Scheduling Breakdown</span>
+                    </div>
+                    <div class="table-responsive" style="max-height:220px;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>PID</th>
+                                    <th>Name</th>
+                                    <th>Arr</th>
+                                    <th>Burst</th>
+                                    <th>Prio</th>
+                                    <th>Start</th>
+                                    <th>Comp</th>
+                                    <th>WT</th>
+                                    <th>TAT</th>
+                                    <th>RT</th>
+                                </tr>
+                            </thead>
+                            <tbody id="metrics-table-body">
+                                <!-- Injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ===================================================================
+             TAB 4: C SOURCE CODE & CAPSTONE REPORT (ARCHITECTURE)
+             =================================================================== -->
+        <section id="tab-code" class="tab-panel">
+            <div class="card" style="margin-bottom:20px;">
+                <div class="card-header">
+                    <div>
+                        <span class="card-title">📂 Capstone C Source Code Explorer</span>
+                        <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">
+                            Inspect the authentic POSIX C implementations for /proc parsing, bottleneck heuristic rules, and scheduler math.
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="generateCapstoneReport()">📥 Download Capstone Performance Report (.md)</button>
+                </div>
+
+                <div class="code-viewer-container">
+                    <div class="code-file-list">
+                        <div class="code-file-item active" data-file="monitor.c">📄 monitor.c</div>
+                        <div class="code-file-item" data-file="analyzer.c">📄 analyzer.c</div>
+                        <div class="code-file-item" data-file="scheduler.c">📄 scheduler.c</div>
+                        <div class="code-file-item" data-file="main.c">📄 main.c</div>
+                        <div class="code-file-item" data-file="syspilot.h">📄 syspilot.h</div>
+                        <div class="code-file-item" data-file="Makefile">📄 Makefile</div>
+                    </div>
+
+                    <div style="display:flex; flex-direction:column; overflow:hidden;">
+                        <div style="background:var(--bg-card); padding:8px 16px; border-radius:8px 8px 0 0; border:1px solid var(--border-color); border-bottom:none; font-family:var(--font-mono); font-size:12px; color:var(--accent-cyan);">
+                            Viewing: <span id="current-code-filename" style="color:#fff; font-weight:700;">monitor.c</span>
+                        </div>
+                        <div id="code-display" class="code-editor-box" style="border-radius:0 0 8px 8px;">
+                            Loading source code...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Benchmark All Modal Dialog -->
+    <div id="benchmark-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+        <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:12px; max-width:850px; width:90%; padding:24px; box-shadow:0 12px 32px rgba(0,0,0,0.6);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <h3 style="font-size:18px; color:var(--text-main);">🏆 All 7 CPU Scheduling Algorithms Head-to-Head Benchmark</h3>
+                <button class="btn btn-sm" onclick="closeBenchmarkModal()">✕ Close</button>
+            </div>
+            <div style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+                Comparative evaluation across identical workload tasks. Evaluates Turnaround Time, Waiting Time, Response Time, Context Switch overhead, and Jain's Fairness Index.
+            </div>
+
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Algorithm</th>
+                            <th>Avg Waiting Time</th>
+                            <th>Avg Turnaround</th>
+                            <th>Avg Response</th>
+                            <th>Context Switches</th>
+                            <th>Jain's Fairness</th>
+                            <th>CPU Util %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="benchmark-table-body">
+                        <!-- Injected via JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top:20px; text-align:right;">
+                <button class="btn btn-primary" onclick="closeBenchmarkModal()">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/monitor.js"></script>
+    <script src="js/analyzer.js"></script>
+    <script src="js/scheduler.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
