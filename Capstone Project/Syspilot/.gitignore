@@ -1,0 +1,22 @@
+# Binaries and object files
+*.o
+syspilot
+*.exe
+*.dll
+*.so
+test_scheduler_bin
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# OS & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
