@@ -1,0 +1,6 @@
+1000 x fork()+wait                     48.17 ms     48.2 us each
+1000 x pthread_create()+join            8.07 ms      8.1 us each
+1000 x fork()+exec(true)              732.57 ms    732.6 us each
+1000 x posix_spawn(true)              561.08 ms    561.1 us each
+1000 threads, then join all            18.35 ms  (created 1000)
+1000 processes, then wait all          78.46 ms

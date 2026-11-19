@@ -1,0 +1,10 @@
+Source file: 16 MB   (median of 5 runs)
+method                         reads   real(s)   user(s)    sys(s)
+read/write buf=64             262145    0.1123    0.0161    0.0930
+read/write buf=512             32769    0.0459    0.0070    0.0201
+read/write buf=4096             4097    0.0251    0.0002    0.0088
+read/write buf=65536             257    0.0122    0.0002    0.0052
+read/write buf=1048576            17    0.0131    0.0002    0.0049
+fread/fwrite buf=4096           4096    0.0243    0.0001    0.0088
+mmap + write(whole file)           0    0.0223    0.0000    0.0074
+read/write buf=1 (1 MB)      1048577    0.3808    0.0737    0.2939
