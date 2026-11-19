@@ -6,7 +6,7 @@
 ---
 
 ## Repository Structure
-- **[Capstone Project](./syspilot)**: **SysPilot** — Autonomous OS Resource & Process Management Architecture
+- **[syspilot](./syspilot)**: **SysPilot** — Autonomous OS Resource & Process Management Architecture
   - Real-time kernel & process telemetry collection
   - Heuristic & bottleneck analysis engine
   - Adaptive process scheduler with MLFQ & proportional sharing
