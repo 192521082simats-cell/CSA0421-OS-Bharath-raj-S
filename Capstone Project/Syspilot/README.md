@@ -15,7 +15,7 @@ SysPilot addresses three core architectural pillars:
 
 ---
 
-## 🏛️ System Architecture
+##  System Architecture
 
 ```
 SysPilot/
