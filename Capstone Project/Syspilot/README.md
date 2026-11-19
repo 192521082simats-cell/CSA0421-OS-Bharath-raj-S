@@ -5,7 +5,7 @@
 
 ---
 
-## 📌 Project Overview
+##  Project Overview
 **SysPilot** is a production-grade Operating System resource monitoring and algorithmic evaluation framework. It bridges low-level C system programming with an interactive, modern real-time Web Dashboard running locally on `http://localhost:5000`.
 
 SysPilot addresses three core architectural pillars:
@@ -50,7 +50,7 @@ SysPilot/
 
 ---
 
-## 🚀 How to Run the Application on Localhost
+##  How to Run the Application on Localhost
 
 ### Method 1: One-Click Launch (Windows)
 Double-click `start_syspilot.bat` or run in PowerShell / Command Prompt:
@@ -59,7 +59,7 @@ cd C:\Users\mani\.gemini\antigravity\scratch\SysPilot
 python backend\server.py
 ```
 Open your browser and navigate to:
-👉 **`http://localhost:5000`**
+ **`http://localhost:5000`**
 
 ### Method 2: Linux / WSL Build & Run
 ```bash
@@ -71,7 +71,7 @@ make                     # Compiles the C binary 'syspilot'
 
 ---
 
-## 🔬 Subsystem Deep Dive
+##  Subsystem Deep Dive
 
 ### Module 1: Live System and Process Monitoring
 - **CPU Metrics:** Aggregates `/proc/stat` counter deltas ($\Delta user, \Delta system, \Delta idle, \Delta iowait$) across sampling windows to yield exact per-core and system utilization percentages.
@@ -107,14 +107,14 @@ make                     # Compiles the C binary 'syspilot'
 
 ---
 
-## 📊 Verification & Test Results
+##  Verification & Test Results
 SysPilot includes an automated verification suite in `verify_project.py`:
 ```powershell
 python verify_project.py
 ```
 **Results:**
-- ✅ Module 1: CPU, Memory, Disk, and Process monitoring validated.
-- ✅ Module 2: Heuristic rules and stress testing verified.
-- ✅ Module 3: All 7 scheduling algorithms verified with exact mathematical TAT, WT, RT, and Fairness calculations.
-- ✅ C source code & Makefile verified.
-- ✅ Frontend single-page application verified.
+-  Module 1: CPU, Memory, Disk, and Process monitoring validated.
+-  Module 2: Heuristic rules and stress testing verified.
+-  Module 3: All 7 scheduling algorithms verified with exact mathematical TAT, WT, RT, and Fairness calculations.
+-  C source code & Makefile verified.
+-  Frontend single-page application verified.
