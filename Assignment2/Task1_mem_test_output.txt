@@ -1,0 +1,2 @@
+2000 idle processes : MemAvailable fell by 309828 kB  (154.9 kB each)
+2000 idle threads   : MemAvailable fell by 41680 kB  (20.8 kB each)

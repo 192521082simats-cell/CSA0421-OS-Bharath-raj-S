@@ -1,0 +1,78 @@
+JOB SET (name, arrival, burst, priority [1 = highest]): [('P1', 0, 8, 3), ('P2', 1, 4, 1), ('P3', 2, 9, 4), ('P4', 3, 5, 2)]
+
+=== FCFS ===
+Gantt: P1(0-8) P2(8-12) P3(12-21) P4(21-26)
+Job   Arr Burst Finish  TAT   WT   RT
+P1      0     8      8    8    0    0
+P2      1     4     12   11    7    7
+P3      2     9     21   19   10   10
+P4      3     5     26   23   18   18
+Average: TAT=15.25  WT=8.75  RT=8.75  context switches=3
+
+=== SJF (non-preemptive) ===
+Gantt: P1(0-8) P2(8-12) P4(12-17) P3(17-26)
+Job   Arr Burst Finish  TAT   WT   RT
+P1      0     8      8    8    0    0
+P2      1     4     12   11    7    7
+P3      2     9     26   24   15   15
+P4      3     5     17   14    9    9
+Average: TAT=14.25  WT=7.75  RT=7.75  context switches=3
+
+=== SRTF (preemptive SJF) ===
+Gantt: P1(0-1) P2(1-5) P4(5-10) P1(10-17) P3(17-26)
+Job   Arr Burst Finish  TAT   WT   RT
+P1      0     8     17   17    9    0
+P2      1     4      5    4    0    0
+P3      2     9     26   24   15   15
+P4      3     5     10    7    2    2
+Average: TAT=13.00  WT=6.50  RT=4.25  context switches=4
+
+=== Priority (non-preemptive) ===
+Gantt: P1(0-8) P2(8-12) P4(12-17) P3(17-26)
+Job   Arr Burst Finish  TAT   WT   RT
+P1      0     8      8    8    0    0
+P2      1     4     12   11    7    7
+P3      2     9     26   24   15   15
+P4      3     5     17   14    9    9
+Average: TAT=14.25  WT=7.75  RT=7.75  context switches=3
+
+=== Round Robin (q=3) ===
+Gantt: P1(0-3) P2(3-6) P3(6-9) P4(9-12) P1(12-15) P2(15-16) P3(16-19) P4(19-21) P1(21-23) P3(23-26)
+Job   Arr Burst Finish  TAT   WT   RT
+P1      0     8     23   23   15    0
+P2      1     4     16   15   11    2
+P3      2     9     26   24   15    4
+P4      3     5     21   18   13    6
+Average: TAT=20.00  WT=13.50  RT=3.00  context switches=9
+
+=== SUMMARY (same 4 jobs) ===
+Algorithm                     avg TAT   avg WT   avg RT
+FCFS                            15.25     8.75     8.75
+SJF (non-preemptive)            14.25     7.75     7.75
+SRTF (preemptive SJF)           13.00     6.50     4.25
+Priority (non-preemptive)       14.25     7.75     7.75
+Round Robin (q=3)               20.00    13.50     3.00
+
+=== ROUND ROBIN QUANTUM STUDY ===
+  q  slices  ctx switches  avg TAT   avg WT   avg RT
+  1      26            25    19.00    12.50     0.75
+  3      10             9    20.00    13.50     3.00
+  5       6             5    17.50    11.00     5.50
+ 20       4             3    15.25     8.75     8.75
+
+=== STARVATION IN PRIORITY SCHEDULING, AND AGEING ===
+no ageing                                              : LOW job (arrived t=1) first runs at t=30
+ageing: +1 priority level per 2 time units waited      : LOW job (arrived t=1) first runs at t=20
+
+=== VIDEO-ENCODING SERVICE WORKLOAD (single processor, times in seconds) ===
+jobs: [('FILM1', 0, 1200), ('FILM2', 10, 1200), ('T1', 5, 2), ('T2', 15, 2), ('T3', 25, 2), ('T4', 40, 2), ('T5', 60, 2), ('T6', 90, 2)]
+Algorithm                      avg WT all avg WT thumb avg WT film avg RT thumb  ctx sw
+FCFS                               1773.4       2165.8       596.0       2165.8       7
+SJF (non-preemptive)               1024.6       1165.8       601.0       1165.8       7
+SRTF                                151.8          0.0       607.0          0.0      13
+Priority (thumbnails first)        1024.6       1165.8       601.0       1165.8       7
+Round Robin q=4                     304.1          5.2      1201.0          5.2     605
+Round Robin q=100                   401.1        149.2      1157.0        149.2      29
+MLFQ (q = 2/8/32)                   293.0          0.0      1172.0          0.0      86
+
+MLFQ Gantt (first 14 slices): FILM1(0-5) T1(5-7) FILM1(7-10) FILM2(10-12) FILM1(12-15) T2(15-17) FILM1(17-25) T3(25-27) FILM2(27-35) FILM1(35-40) T4(40-42) FILM1(42-60) T5(60-62) FILM1(62-90)

@@ -1,0 +1,13 @@
+2 threads, 300000 operations each, 16 trains x 8 coaches x 40 seats
+locking                    ops/second   bookkeeping error (double sales)
+no lock                       2318028   -4
+one global lock                607486   0
+one lock per train            1369189   0
+one lock per coach            2132174   0
+
+8 threads, 300000 operations each, 16 trains x 8 coaches x 40 seats
+locking                    ops/second   bookkeeping error (double sales)
+no lock                       2807846   -15
+one global lock               1199435   0
+one lock per train            1726505   0
+one lock per coach            2459600   0

@@ -1,0 +1,1 @@
+exit code 124 (124 = killed by timeout, child never finished)

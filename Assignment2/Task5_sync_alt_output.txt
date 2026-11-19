@@ -1,0 +1,24 @@
+
+SHORT critical section (0 iterations of work), 200000 updates per thread
+method      threads    ns / update     wall (s)       CPU / wall
+mutex             1           21.3        0.004             0.98
+mutex             4           37.8        0.030             1.23
+mutex            16           63.0        0.202             1.90
+spin lock         1           11.1        0.002             0.97
+spin lock         4          170.8        0.137             1.96
+spin lock        16          444.3        1.422             1.97
+atomic add        1           10.7        0.002             0.98
+atomic add        4           25.2        0.020             1.80
+atomic add       16           33.7        0.108             1.94
+
+LONG critical section (2000 iterations of work), 10000 updates per thread
+method      threads    ns / update     wall (s)       CPU / wall
+mutex             1         4256.8        0.043             1.00
+mutex             4         5929.6        0.237             1.09
+mutex            16         4935.5        0.790             1.02
+spin lock         1         4352.3        0.044             0.99
+spin lock         4         8090.7        0.324             1.92
+spin lock        16        25765.3        4.122             1.97
+atomic add        1         4508.0        0.045             1.00
+atomic add        4         2428.6        0.097             1.83
+atomic add       16         2207.1        0.353             1.96

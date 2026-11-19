@@ -1,0 +1,4 @@
+    size |    pipe (ms) |  mqueue (ms) | shm+sem (ms) | checksums equal?
+    1 MB |         0.96 |         1.19 |         0.71 | yes  (1046 MB/s pipe, 1404 MB/s shm)
+   10 MB |         7.19 |        11.67 |         5.71 | yes  (1390 MB/s pipe, 1752 MB/s shm)
+  100 MB |        65.80 |       106.39 |        49.84 | yes  (1520 MB/s pipe, 2006 MB/s shm)

@@ -1,0 +1,26 @@
+CPU cores online: 2
+
+--- Processing 64 camera frames ---
+sequential (1 thread)                 0.485 s   speed-up  1.00x
+one thread per camera (64 threads)    0.245 s   speed-up  1.98x
+thread pool of 1                      0.466 s   speed-up  1.04x
+thread pool of 2                      0.243 s   speed-up  2.00x
+thread pool of 4                      0.254 s   speed-up  1.91x
+thread pool of 8                      0.252 s   speed-up  1.93x
+thread pool of 16                     0.244 s   speed-up  1.98x
+
+--- Alternative: worker processes + pipes ---
+process pool of 2                     0.242 s   speed-up  2.00x
+process pool of 4                     0.278 s   speed-up  1.75x
+process pool of 8                     0.254 s   speed-up  1.91x
+process pool of 16                    0.253 s   speed-up  1.91x
+
+--- Shared counter race (compiled with -O2) ---
+   2 threads x 1000000 increments, expected 2000000
+      unprotected counter = 1950818   (lost 49182 updates)
+      mutex counter       = 2000000
+      atomic counter      = 2000000
+   4 threads x 1000000 increments, expected 4000000
+      unprotected counter = 3872527   (lost 127473 updates)
+      mutex counter       = 4000000
+      atomic counter      = 4000000

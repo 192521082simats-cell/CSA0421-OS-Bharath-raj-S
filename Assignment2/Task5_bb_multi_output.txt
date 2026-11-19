@@ -1,0 +1,9 @@
+[with mutex] 1 producers, 1 consumers, 20000 items: consumed exactly once=20000, never consumed=0, consumed more than once=0  => CORRECT
+[with mutex] 4 producers, 4 consumers, 80000 items: consumed exactly once=80000, never consumed=0, consumed more than once=0  => CORRECT
+[NO mutex] 1 producers, 1 consumers, 20000 items: consumed exactly once=20000, never consumed=0, consumed more than once=0  => CORRECT
+[NO mutex] 1 producers, 1 consumers, 20000 items: consumed exactly once=20000, never consumed=0, consumed more than once=0  => CORRECT
+[NO mutex] 1 producers, 1 consumers, 20000 items: consumed exactly once=20000, never consumed=0, consumed more than once=0  => CORRECT
+[NO mutex] 4 producers, 4 consumers, 80000 items: consumed exactly once=72227, never consumed=3889, consumed more than once=3884  => WRONG
+[NO mutex] 4 producers, 4 consumers, 80000 items: consumed exactly once=73160, never consumed=3422, consumed more than once=3418  => WRONG
+[NO mutex] 4 producers, 4 consumers, 80000 items: consumed exactly once=73011, never consumed=3499, consumed more than once=3490  => WRONG
+[monitor] 4 producers, 4 consumers, 80000 items: consumed exactly once=80000  => CORRECT

@@ -1,0 +1,5 @@
+parent RSS = 21964 kB
+create+destroy 2000 processes: 1529.2 ms  (764.6 us each)
+create+destroy 2000 threads  : 131.3 ms  (65.6 us each)
+process switch (pipe ping-pong): 1.88 us per switch
+thread  switch (pipe ping-pong): 0.96 us per switch

@@ -1,0 +1,2 @@
+[semaphore protocol] 4 readers x 200000 reads, 40000 writes: inconsistent reads = 0, final x=40000 (writes done=40000)
+[NO protocol] 4 readers x 200000 reads, 40000 writes: inconsistent reads = 550, final x=40000 (writes done=40000)

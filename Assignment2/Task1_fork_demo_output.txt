@@ -1,0 +1,34 @@
+parent pid = 267
+parent created child 0 with pid 269
+parent created child 1 with pid 270
+parent created child 2 with pid 271
+parent created child 3 with pid 272
+
+--- /proc status of child 0 (sleeping => waiting state) ---
+Name:	fork_demo
+State:	S (sleeping)
+Pid:	269
+PPid:	267
+VmRSS:	     296 kB
+voluntary_ctxt_switches:	1
+nonvoluntary_ctxt_switches:	0
+
+--- ps view of the family ---
+  PID  PPID STAT WCHAN          CMD
+  269   267 S    hrtimer_nanosl ./fork_demo
+  270   267 S    hrtimer_nanosl ./fork_demo
+  271   267 S    hrtimer_nanosl ./fork_demo
+  272   267 S    hrtimer_nanosl ./fork_demo
+  273   267 S    do_wait        sh -c -- ps -o pid,ppid,stat,wchan:14,cmd --ppid 267
+
+--- children exited but not yet reaped (state Z = zombie) ---
+  PID  PPID STAT WCHAN          CMD
+  269   267 Z    -              [fork_demo] <defunct>
+  270   267 Z    -              [fork_demo] <defunct>
+  271   267 Z    -              [fork_demo] <defunct>
+  272   267 Z    -              [fork_demo] <defunct>
+  275   267 S    do_wait        sh -c -- ps -o pid,ppid,stat,wchan:14,cmd --ppid 267
+parent reaped pid 269, exit status 10
+parent reaped pid 270, exit status 11
+parent reaped pid 271, exit status 12
+parent reaped pid 272, exit status 13

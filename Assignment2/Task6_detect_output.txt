@@ -1,0 +1,2 @@
+snapshot 1: no deadlock
+snapshot 2 (P2 now also requests one more C): P1 P2 P3 P4 are DEADLOCKED
