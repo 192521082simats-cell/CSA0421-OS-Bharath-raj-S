@@ -2,8 +2,8 @@
 
 | Field | Value |
 |---|---|
-| Name | **[YOUR NAME]** |
-| Register number | **[YOUR REGISTER NUMBER]** |
+| Name | **Bharath Raj S** |
+| Register number | **192521082** |
 | Compiler | gcc 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04.1) |
 | Linux distribution | Ubuntu 24.04.5 LTS, 2 CPU cores |
 | Standard compile command | `gcc -std=c11 -Wall -Wextra -pthread` (benchmarks add `-O2`, `-std=gnu11`) |
