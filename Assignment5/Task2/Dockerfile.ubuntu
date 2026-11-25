@@ -1,0 +1,11 @@
+# Comparison variant for the alternative-concept analysis (full Ubuntu base).
+FROM ubuntu:24.04
+RUN apt-get update && apt-get install -y python3 python3-pip python3-venv && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY requirements.txt .
+RUN python3 -m venv /venv && /venv/bin/pip install --no-cache-dir -r requirements.txt
+COPY app.py .
+RUN useradd --create-home portal && chown -R portal:portal /app
+USER portal
+EXPOSE 8000
+CMD ["/venv/bin/gunicorn", "--bind", "0.0.0.0:8000", "app:app"]
