@@ -1,6 +1,6 @@
-# CSA04 – Operating Systems – Assignment 5 (CO5)
+# CSA0421 – Operating Systems – Assignment 5 (CO5)
 
-- Name: Bharath Raj S      Register number: ______
+- Name: Bharath Raj S      Register number: 192521082
 - Linux distribution/version: ______      Shell: bash ___      Python: 3.12
 - Docker ___ / Compose ___ / minikube or kind ___ / VirtualBox or KVM ___
 
