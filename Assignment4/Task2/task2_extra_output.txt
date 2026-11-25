@@ -1,0 +1,4 @@
+AAAAAA........CCCCC.............  free blocks = 21 (runs of 8 and 13)
+F (15 blocks) contiguous: start -1  (-1 = fails)
+F (15 blocks) indexed   : index block 6
+AAAAAAfFFFFFFFCCCCCFFFFFFFF.....
