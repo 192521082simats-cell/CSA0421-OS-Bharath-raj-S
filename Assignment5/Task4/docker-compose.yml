@@ -1,0 +1,19 @@
+# B4.1: portal + database + second service (learning-management system stand-in)
+services:
+  portal:
+    image: result-portal
+    ports: ["8000:8000"]
+    environment: { DB_HOST: db }
+    deploy: { resources: { limits: { cpus: "0.50", memory: 256M } } }
+  lms:
+    image: result-portal          # stand-in for the LMS image
+    ports: ["8001:8000"]
+    environment: { DB_HOST: db }
+    deploy: { resources: { limits: { cpus: "0.50", memory: 384M } } }
+  db:
+    image: postgres:16
+    environment: { POSTGRES_USER: portal, POSTGRES_PASSWORD: change_me, POSTGRES_DB: resultsdb }
+    volumes: [dbdata:/var/lib/postgresql/data]
+    deploy: { resources: { limits: { cpus: "1.0", memory: 512M } } }
+volumes:
+  dbdata:
