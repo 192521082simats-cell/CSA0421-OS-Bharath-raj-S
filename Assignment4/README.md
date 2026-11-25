@@ -1,5 +1,5 @@
-# CSA04 - Operating Systems - Assignment 4 (CO4)
-Name: <your name>        Register number: <RegisterNumber>
+# CSA0421 - Operating Systems - Assignment 4 (CO4)
+Name: < Bharath Raj S>        Register number: <192521082>
 Compiler: gcc <version>  OS: <Linux distribution and version>
 
 ## Compile
