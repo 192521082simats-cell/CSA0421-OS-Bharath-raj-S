@@ -1,0 +1,12 @@
+Requests measured: 200000   (Zipf exponent 1.2, 1000 videos)
+
+                                       Design A     Design B
+Cache hit ratio (RAM+SSD)                 48.9%        77.6%
+Requests reaching the HDDs                51.1%        22.4%
+Mean start-up read time (3 reads)      28.71 ms     13.11 ms
+95th percentile start-up               56.00 ms     56.00 ms
+
+Per-server peak load = 1000 chunk reads/s; one HDD serves 53.6 random 1-MB reads/s
+HDD reads/s needed                        511.3        223.6
+HDDs needed per server (ceil)                10            5
+NVMe read load per server                     -       288 MB/s
