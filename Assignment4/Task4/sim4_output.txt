@@ -1,0 +1,27 @@
+
+Light (mean inter-arrival 200)
+Algo      Avg head move/req    Avg wait (ct)    Max wait (ct)
+FCFS                   66.2            100.1              684
+SSTF                   63.9             90.7              487
+SCAN                  104.3            165.7              418
+C-SCAN                128.3            243.2              574
+LOOK                   64.0             91.2              398
+C-LOOK                 65.3             96.7              531
+
+Medium (mean inter-arrival 80)
+Algo      Avg head move/req    Avg wait (ct)    Max wait (ct)
+FCFS                   66.2            496.1             2231
+SSTF                   53.2            122.0              755
+SCAN                   65.1            183.6              446
+C-SCAN                 69.2            249.9              594
+LOOK                   53.3            123.4              412
+C-LOOK                 56.2            152.7              562
+
+Heavy (mean inter-arrival 25)
+Algo      Avg head move/req    Avg wait (ct)    Max wait (ct)
+FCFS                   66.2         233531.3           464241
+SSTF                   19.7            187.9             1285
+SCAN                   19.7            195.8              552
+C-SCAN                 19.8            265.0              577
+LOOK                   19.7            183.2              525
+C-LOOK                 19.8            246.3              684
