@@ -1,0 +1,19 @@
+[Unit]
+Description=University Result Portal (Gunicorn)
+After=network.target
+
+[Service]
+User=portal
+Group=portal
+WorkingDirectory=/opt/portal
+ExecStart=/opt/portal/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 app:app
+Restart=on-failure
+RestartSec=3
+MemoryMax=512M
+CPUQuota=100%
+NoNewPrivileges=true
+ProtectSystem=full
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

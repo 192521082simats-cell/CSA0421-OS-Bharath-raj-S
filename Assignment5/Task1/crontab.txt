@@ -1,0 +1,5 @@
+# m h dom mon dow  command
+0 * * * *    /home/student/CSA04-REGNO-Assignment5/Task01/log_summary.sh >> /tmp/log_summary.out 2>&1
+*/15 * * * * /home/student/CSA04-REGNO-Assignment5/Task01/disk_alert.sh 80
+30 * * * *   /home/student/CSA04-REGNO-Assignment5/Task01/real_log_analysis.sh >> /tmp/nginx_report.out 2>&1
+0 2 * * *    pg_dump -U portal resultsdb | gzip > /var/backups/resultsdb_$(date +\%F).sql.gz
